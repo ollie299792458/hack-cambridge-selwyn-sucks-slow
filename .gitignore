@@ -37,3 +37,4 @@ test.py
 #ignore c python
 __pycache__/
 *.pyc
+venv/
