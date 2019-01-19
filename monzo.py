@@ -22,7 +22,7 @@ import receipt_types
 
 
 #price integer pennies, date is datetime, text is string, link is string
-def match_and_upload_receipt(price, datetime, text, link, ACCOUNT_ID, ACCESS_TOKEN):
+def match_and_upload_receipt(price, date, text, link, ACCOUNT_ID, ACCESS_TOKEN):
     #get all transactions
     #http "https://api.monzo.com/transactions" \
     "Authorization: Bearer $access_token" \
@@ -50,11 +50,7 @@ def match_and_upload_receipt(price, datetime, text, link, ACCOUNT_ID, ACCESS_TOK
         print("No matching transaction found")
         return
 
-    candidate = candidates[0]
-
-    if len(candidates) > 1 :
-        min_candidate = candidate
-        #find closest
+    candidate = min(candidates, key=lambda x: (datetime.fromisoformat(x['created']) - date).total_seconds())
 
     # Using a random receipt ID we generate as external ID
     receipt_id = uuid.uuid4().hex
