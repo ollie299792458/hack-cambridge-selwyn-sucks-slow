@@ -11,37 +11,57 @@
 import requests
 #
 import json
+#
+from datetime import timedelta, datetime
 
 ACCOUNT_ID = 'acc_00009RIBEdUZdFewsGVO7d'
 
 ACCESS_TOKEN = open('monzo-access-token','r').read()[:-1]
 
 
-def within(date, date):
-    pass
-
-
-def match_and_upload_receipt(price, date, text, link):
+#price integer pennies, date is datetime, text is string, link is string
+def match_and_upload_receipt(price, datetime, text, link):
     #get all transactions
     #http "https://api.monzo.com/transactions" \
     "Authorization: Bearer $access_token" \
     "account_id==$account_id"
-    r = requests.get('https://api.monzo.com/transactions?expand[]=merchant&account_id='+ACCOUNT_ID, \
-                     headers={'Authorization': 'Bearer '+ACCESS_TOKEN})
+
+    since = (datetime - timedelta(days=7)).isoformat()+'Z'
+    before = (datetime + timedelta(days=7)).isoformat()+'Z'
+
+    r = requests.get('https://api.monzo.com/transactions?expand[]=merchant&account_id='+ACCOUNT_ID+'&since='+since+
+                     '&before'+before, headers={'Authorization': 'Bearer '+ACCESS_TOKEN})
     print("Transaction get: "+str(r))
 
-    transactions = json.loads(r.text)["transactions"];
+    transactions = json.loads(r.text)["transactions"]
 
     candidates = []
 
     for transaction in transactions :
-        if (transaction["amount"] == price) :
-            print("Candidate transaction:"+json.dumps(transaction, index=1));
+        print(json.dumps(transaction, index=1))
+        if transaction["amount"] == price:
+            #check if debit transaction
+            print("Candidate transaction:"+json.dumps(transaction, index=1))
             candidates.append(transaction)
 
+    if len(candidates) == 0:
+        print("No matching transaction found")
+        return
+
+    candidate = candidates[0]
+
+    if len(candidates) > 1 :
+        min_candidate = candidate
+        #find closest
+
+    candidate['notes'] = text + "\n Link: "+ link;
+
+    r = requests.patch('https://api.monzo.com/transactions/'+candidate['id'], headers={'Authorization': 'Bearer '+ACCESS_TOKEN}, data={'transaction':candidate})
+    print("Transaction patch: "+str(r))
+
     #get all debits within 2 days of date
-    print(json.dumps(transactions, indent=4));
+    print(json.dumps(transactions, indent=4))
 
 
 # test
-match_and_upload_receipt(0,"hi","by","wy")
+match_and_upload_receipt(1010, datetime(2019,1,2),"Testing testing 1 2 3 receipt muncher","downloadmoreram.com")
