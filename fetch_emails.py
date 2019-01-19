@@ -36,7 +36,7 @@ def main():
 
     service = build('gmail', 'v1', credentials=creds)
 
-    subject_keywords = ['order', 'receipt', 'booking']
+    subject_keywords = ['order', 'receipt', 'booking', 'confirmation', 'invoice']
     query = 'subject:' + ' OR subject:'.join(subject_keywords)
     print(query)
     response = service.users().messages().list(userId='me', q=query).execute()
