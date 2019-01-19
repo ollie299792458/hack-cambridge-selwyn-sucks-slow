@@ -19,7 +19,7 @@ def scrape(message_id, mime_msg):
 
     if len(monies) < 1:
         print("No prices found")
-        return 1, 0, 0, 0
+        return 1
 
     money = max(monies)
 
