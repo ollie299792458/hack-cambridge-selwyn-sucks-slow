@@ -28,8 +28,8 @@ def match_and_upload_receipt(price, datetime, text, link, ACCOUNT_ID, ACCESS_TOK
     "Authorization: Bearer $access_token" \
     "account_id==$account_id"
 
-    since = (datetime - timedelta(days=700)).isoformat()[:-6]+'Z'
-    before = (datetime + timedelta(days=700)).isoformat()[:-6]+'Z'
+    since = (datetime - timedelta(days=7)).isoformat()[:-6]+'Z'
+    before = (datetime + timedelta(days=7)).isoformat()[:-6]+'Z'
     print(since)
     r = requests.get('https://api.monzo.com/transactions?expand[]=merchant&account_id='+ACCOUNT_ID+'&since='+since+
                      '&before'+before, headers={'Authorization': 'Bearer '+ACCESS_TOKEN})
@@ -41,7 +41,7 @@ def match_and_upload_receipt(price, datetime, text, link, ACCOUNT_ID, ACCESS_TOK
 
     for transaction in transactions :
         #print(transaction)
-        if transaction["amount"] == price:
+        if -transaction["amount"] == abs(price):
             #check if debit transaction
             print("Candidate transaction:"+str(transaction))
             candidates.append(transaction)

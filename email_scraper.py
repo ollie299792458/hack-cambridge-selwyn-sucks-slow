@@ -38,4 +38,4 @@ def scrape(message_id, mime_msg):
 
     email_link = "https://mail.google.com/mail/#inbox/{}".format(message_id)
 
-    return -money, time, subject, email_link
+    return money, time, subject, email_link
