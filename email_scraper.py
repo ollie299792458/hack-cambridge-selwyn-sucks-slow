@@ -4,6 +4,7 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 
 
+
 def scrape(message_id, mime_msg):
     soup = None
     if mime_msg.is_multipart():
@@ -13,15 +14,23 @@ def scrape(message_id, mime_msg):
     else:
         soup = BeautifulSoup(mime_msg.get_payload(decode=True), 'html.parser')
 
-    monies = map(lambda s: float(re.search(r'£\d+\.\d+', s).group(0)[1:]), soup.find_all(string=re.compile(r'£\d+\.\d+')))
+    regex_digits = '\s*\d+\s*\.\s*\d+\s*'
+    regex = r'(?:GBP|£)('+regex_digits+')|('+regex_digits+')(?:GBP|£)'
 
-    monies = list(monies)
+    moniestrings = soup.find_all(string=re.compile(regex))
 
-    if len(monies) < 1:
+    max_money = None
+    for s in moniestrings:
+        money = float(list(filter(lambda x: x is not None, re.compile(regex).match(moniestrings[0]).groups()))[0])
+        money = int(money * 100)
+        if max_money is None or money > max_money:
+            max_money = money
+
+    if max_money is None:
         print("No prices found")
-        return 1
+        return 1,datetime.now(),"hi","downloadmoreram.com"
 
-    money = max(monies)
+    money = max_money
 
     time = datetime.strptime(mime_msg['date'], '%a, %d %b %Y %H:%M:%S %z')
 
