@@ -27,6 +27,7 @@ hs_err_pid*
 
 #ignore access key
 monzo-access-token
+credentials.json
 
 #ignore test
 test.py
