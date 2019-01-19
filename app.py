@@ -13,6 +13,7 @@ from utils import error
 import googleapiclient.discovery
 import main
 import json
+import fetch_emails
 
 # This variable specifies the name of a file that contains the OAuth 2.0
 # information for this application, including its client_id and client_secret.
@@ -126,6 +127,17 @@ def authorize():
     flask.session['state'] = state
 
     return flask.redirect(authorization_url)
+
+@app.route('/doeverything')
+def do_everything():
+    if 'credentials' not in flask.session:
+        return flask.redirect('authorize')
+
+    # Load credentials from the session.
+    credentials = google.oauth2.credentials.Credentials(
+        **flask.session['credentials'])
+
+    fetch_emails.main(credentials)
 
 
 @app.route('/oauth2callback')
