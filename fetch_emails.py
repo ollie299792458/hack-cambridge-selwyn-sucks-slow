@@ -13,7 +13,7 @@ import email_scraper
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 
 
-def main(creds):
+def main(creds, monzo_creds):
     """Shows basic usage of the Gmail API.
     Lists the user's Gmail labels.
     """
@@ -59,7 +59,9 @@ def main(creds):
         msg_str = base64.urlsafe_b64decode(message['raw'])
         mime_msg = email.message_from_bytes(msg_str)
         money, time, subject, email_link = email_scraper.scrape(mime_msg)
-        monzo.match_and_upload_receipt(money, time, subject, email_link)
+
+        if money != 1:
+            monzo.match_and_upload_receipt(money, time, subject, email_link)
 
 
 if __name__ == '__main__':

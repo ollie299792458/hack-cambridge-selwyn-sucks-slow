@@ -103,6 +103,7 @@ def oauth2callbackmonzo():
         if "refresh_token" in response_object:
             refresh_token = response_object["refresh_token"]
 
+    print(json.dumps(response_object))
     flask.session['credentialsmonzo'] = {'refresh_token': refresh_token, 'access_token': access_token}
 
     return flask.redirect('/')
@@ -137,7 +138,7 @@ def do_everything():
     credentials = google.oauth2.credentials.Credentials(
         **flask.session['credentials'])
 
-    fetch_emails.main(credentials)
+    fetch_emails.main(credentials, flask.session['credentialsmonzo'])
 
 
 @app.route('/oauth2callback')
