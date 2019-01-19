@@ -41,7 +41,7 @@ def match_and_upload_receipt(price, datetime, text, link, ACCOUNT_ID, ACCESS_TOK
 
     for transaction in transactions :
         #print(transaction)
-        if transaction["amount"] == price or True:
+        if transaction["amount"] == price:
             #check if debit transaction
             print("Candidate transaction:"+str(transaction))
             candidates.append(transaction)
@@ -56,7 +56,6 @@ def match_and_upload_receipt(price, datetime, text, link, ACCOUNT_ID, ACCESS_TOK
         min_candidate = candidate
         #find closest
 
-
     # Using a random receipt ID we generate as external ID
     receipt_id = uuid.uuid4().hex
 
@@ -65,6 +64,7 @@ def match_and_upload_receipt(price, datetime, text, link, ACCOUNT_ID, ACCESS_TOK
     example_receipt = receipt_types.Receipt("", receipt_id, candidate["id"],
                                             abs(candidate["amount"]), "GBP", "", "", example_items)
     example_receipt_marshaled = example_receipt.marshal()
+    print(example_receipt_marshaled)
     client = requests.put("https://api.monzo.com/transaction-receipts/", data=example_receipt_marshaled, headers={'Authorization': 'Bearer '+ACCESS_TOKEN})
     print(client.text)
 
