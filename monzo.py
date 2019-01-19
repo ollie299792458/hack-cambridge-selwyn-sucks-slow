@@ -54,11 +54,12 @@ def match_and_upload_receipt(price, datetime, text, link):
         min_candidate = candidate
         #find closest
 
-    candidate['notes'] = text + "\n Link: "+ link;
 
     print(candidate)
 
-    r = requests.patch('https://api.monzo.com/transactions/'+candidate['id'], headers={'Authorization': 'Bearer '+ACCESS_TOKEN}, data={'transaction':candidate})
+    #this bit doesn't work - use receipts api instead
+    candidate['notes'] = text + "\n Link: "+ link
+    r = requests.patch('https://api.monzo.com/transactions/'+candidate['id']+'/?account_id='+ACCOUNT_ID, headers={'Authorization': 'Bearer '+ACCESS_TOKEN}, data={'transaction':candidate})
     print("Transaction patch: "+str(r))
 
 
