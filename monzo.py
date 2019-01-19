@@ -28,8 +28,8 @@ def match_and_upload_receipt(price, date, text, link, ACCOUNT_ID, ACCESS_TOKEN):
     "Authorization: Bearer $access_token" \
     "account_id==$account_id"
 
-    since = (datetime - timedelta(days=7)).isoformat()[:-6]+'Z'
-    before = (datetime + timedelta(days=7)).isoformat()[:-6]+'Z'
+    since = (date - timedelta(days=7)).isoformat()[:-6]+'Z'
+    before = (date + timedelta(days=7)).isoformat()[:-6]+'Z'
     r = requests.get('https://api.monzo.com/transactions?expand[]=merchant&account_id='+ACCOUNT_ID+'&since='+since+
                      '&before'+before, headers={'Authorization': 'Bearer '+ACCESS_TOKEN})
     transactions = json.loads(r.text)["transactions"]
@@ -55,7 +55,7 @@ def match_and_upload_receipt(price, date, text, link, ACCOUNT_ID, ACCESS_TOKEN):
     example_receipt = receipt_types.Receipt("", receipt_id, candidate["id"],
                                             abs(candidate["amount"]), "GBP", "", "", example_items)
     example_receipt_marshaled = example_receipt.marshal()
-    print(datetime.isoformat() + " " + str(example_receipt_marshaled))
+    print(date.isoformat() + " " + str(example_receipt_marshaled))
     client = requests.put("https://api.monzo.com/transaction-receipts/", data=example_receipt_marshaled, headers={'Authorization': 'Bearer '+ACCESS_TOKEN})
 
 # test
