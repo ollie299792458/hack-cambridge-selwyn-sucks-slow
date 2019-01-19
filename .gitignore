@@ -35,4 +35,5 @@ token.pickle
 test.py
 
 #ignore c python
+__cpython__/
 *.pyc
