@@ -55,7 +55,7 @@ def match_and_upload_receipt(price, date, text, link, ACCOUNT_ID, ACCESS_TOKEN):
     example_receipt = receipt_types.Receipt("", receipt_id, candidate["id"],
                                             abs(candidate["amount"]), "GBP", "", "", example_items)
     example_receipt_marshaled = example_receipt.marshal()
-    print(datetime + example_receipt_marshaled)
+    print(datetime.isoformat() + " " + str(example_receipt_marshaled))
     client = requests.put("https://api.monzo.com/transaction-receipts/", data=example_receipt_marshaled, headers={'Authorization': 'Bearer '+ACCESS_TOKEN})
 
 # test
