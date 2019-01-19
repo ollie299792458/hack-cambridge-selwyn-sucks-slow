@@ -38,10 +38,10 @@ def match_and_upload_receipt(price, datetime, text, link):
     candidates = []
 
     for transaction in transactions :
-        print(json.dumps(transaction, index=1))
+        #print(transaction)
         if transaction["amount"] == price:
             #check if debit transaction
-            print("Candidate transaction:"+json.dumps(transaction, index=1))
+            print("Candidate transaction:"+str(transaction))
             candidates.append(transaction)
 
     if len(candidates) == 0:
@@ -56,12 +56,11 @@ def match_and_upload_receipt(price, datetime, text, link):
 
     candidate['notes'] = text + "\n Link: "+ link;
 
+    print(candidate)
+
     r = requests.patch('https://api.monzo.com/transactions/'+candidate['id'], headers={'Authorization': 'Bearer '+ACCESS_TOKEN}, data={'transaction':candidate})
     print("Transaction patch: "+str(r))
 
-    #get all debits within 2 days of date
-    print(json.dumps(transactions, indent=4))
-
 
 # test
-match_and_upload_receipt(1010, datetime(2019,1,2),"Testing testing 1 2 3 receipt muncher","downloadmoreram.com")
+match_and_upload_receipt(-1010, datetime(2019,1,2),"Testing testing 1 2 3 receipt muncher","downloadmoreram.com")
