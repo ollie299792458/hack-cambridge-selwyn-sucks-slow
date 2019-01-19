@@ -8,15 +8,21 @@
 # Upload data - text & link in notes, (email screenshot as receipt?)
 
 # pipenv install requests
+import uuid
+
 import requests
 #
 import json
 #
 from datetime import timedelta, datetime
+from main import ReceiptsClient
 
-ACCOUNT_ID = 'acc_00009RIBEdUZdFewsGVO7d'
+import main
+import receipt_types
 
-ACCESS_TOKEN = open('monzo-access-token','r').read()[:-1]
+ACCOUNT_ID = open('monzo-account-id','r').read()
+
+ACCESS_TOKEN = open('monzo-access-token','r').read()
 
 
 #price integer pennies, date is datetime, text is string, link is string
@@ -55,12 +61,15 @@ def match_and_upload_receipt(price, datetime, text, link):
         #find closest
 
 
-    print(candidate)
+    # Using a random receipt ID we generate as external ID
+    receipt_id = uuid.uuid4().hex
 
-    #this bit doesn't work - use receipts api instead
-    candidate['notes'] = text + "\n Link: "+ link
-    r = requests.patch('https://api.monzo.com/transactions/'+candidate['id']+'/?account_id='+ACCOUNT_ID, headers={'Authorization': 'Bearer '+ACCESS_TOKEN}, data={'transaction':candidate})
-    print("Transaction patch: "+str(r))
+    example_items = [receipt_types.Item(text+" "+link, 1, "", abs(candidate["amount"]), "GBP", 0, [])]
+
+    example_receipt = receipt_types.Receipt("", receipt_id, candidate["id"],
+                                            abs(candidate["amount"]), "GBP", "", "", example_items)
+    example_receipt_marshaled = example_receipt.marshal()
+    client = ReceiptsClient()._api_client.api_put("transaction-receipts/", example_receipt_marshaled)
 
 
 # test

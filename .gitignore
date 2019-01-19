@@ -27,6 +27,7 @@ hs_err_pid*
 
 #ignore access key
 monzo-access-token
+monzo-account-id
 credentials.json
 token.pickle
 
