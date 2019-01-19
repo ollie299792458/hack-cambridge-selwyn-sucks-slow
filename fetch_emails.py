@@ -17,24 +17,6 @@ def main(creds, monzo_creds):
     """Shows basic usage of the Gmail API.
     Lists the user's Gmail labels.
     """
-    creds = None
-    # The file token.pickle stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    if os.path.exists('token.pickle'):
-        with open('token.pickle', 'rb') as token:
-            creds = pickle.load(token)
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
-            creds = flow.run_local_server()
-        # Save the credentials for the next run
-        with open('token.pickle', 'wb') as token:
-            pickle.dump(creds, token)
 
     service = build('gmail', 'v1', credentials=creds)
 
@@ -58,11 +40,13 @@ def main(creds, monzo_creds):
         print('Message snippet: %s' % message['snippet'])
         msg_str = base64.urlsafe_b64decode(message['raw'])
         mime_msg = email.message_from_bytes(msg_str)
-        money, time, subject, email_link = email_scraper.scrape(mime_msg)
+        try:
+            money, time, subject, email_link = email_scraper.scrape(message['id'], mime_msg)
 
-        if money != 1:
-            monzo.match_and_upload_receipt(money, time, subject, email_link)
-
+            if money != 1:
+                monzo.match_and_upload_receipt(money, time, subject, email_link, monzo_creds['first_account_id'], monzo_creds['access_token'])
+        except:
+            continue
 
 if __name__ == '__main__':
     main()

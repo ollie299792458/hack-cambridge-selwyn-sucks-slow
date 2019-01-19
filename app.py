@@ -104,7 +104,13 @@ def oauth2callbackmonzo():
             refresh_token = response_object["refresh_token"]
 
     print(json.dumps(response_object))
-    flask.session['credentialsmonzo'] = {'refresh_token': refresh_token, 'access_token': access_token}
+
+    accounts_response = requests.get('https://api.monzo.com/accounts', headers={'Authorization': 'Bearer '+access_token})
+    accounts = accounts_response.json()
+    print(accounts)
+    first_account_id = accounts['accounts'][0]['id']
+    print(first_account_id)
+    flask.session['credentialsmonzo'] = {'refresh_token': refresh_token, 'access_token': access_token, 'first_account_id': first_account_id}
 
     return flask.redirect('/')
 

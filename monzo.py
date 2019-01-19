@@ -20,32 +20,28 @@ from main import ReceiptsClient
 import main
 import receipt_types
 
-ACCOUNT_ID = open('monzo-account-id','r').read()
-
-ACCESS_TOKEN = open('monzo-access-token','r').read()
-
 
 #price integer pennies, date is datetime, text is string, link is string
-def match_and_upload_receipt(price, datetime, text, link):
+def match_and_upload_receipt(price, datetime, text, link, ACCOUNT_ID, ACCESS_TOKEN):
     #get all transactions
     #http "https://api.monzo.com/transactions" \
     "Authorization: Bearer $access_token" \
     "account_id==$account_id"
 
-    since = (datetime - timedelta(days=7)).isoformat()+'Z'
-    before = (datetime + timedelta(days=7)).isoformat()+'Z'
-
+    since = (datetime - timedelta(days=700)).isoformat()[:-6]+'Z'
+    before = (datetime + timedelta(days=700)).isoformat()[:-6]+'Z'
+    print(since)
     r = requests.get('https://api.monzo.com/transactions?expand[]=merchant&account_id='+ACCOUNT_ID+'&since='+since+
                      '&before'+before, headers={'Authorization': 'Bearer '+ACCESS_TOKEN})
     print("Transaction get: "+str(r))
-
+    print(r.text)
     transactions = json.loads(r.text)["transactions"]
 
     candidates = []
 
     for transaction in transactions :
         #print(transaction)
-        if transaction["amount"] == price:
+        if transaction["amount"] == price or True:
             #check if debit transaction
             print("Candidate transaction:"+str(transaction))
             candidates.append(transaction)
@@ -69,8 +65,8 @@ def match_and_upload_receipt(price, datetime, text, link):
     example_receipt = receipt_types.Receipt("", receipt_id, candidate["id"],
                                             abs(candidate["amount"]), "GBP", "", "", example_items)
     example_receipt_marshaled = example_receipt.marshal()
-    client = ReceiptsClient()._api_client.api_put("transaction-receipts/", example_receipt_marshaled)
-
+    client = requests.put("https://api.monzo.com/transaction-receipts/", data=example_receipt_marshaled, headers={'Authorization': 'Bearer '+ACCESS_TOKEN})
+    print(client.text)
 
 # test
-match_and_upload_receipt(-1010, datetime(2019,1,2),"Testing testing 1 2 3 receipt muncher","downloadmoreram.com")
+#match_and_upload_receipt(-1010, datetime(2019,1,2),"Testing testing 1 2 3 receipt muncher","downloadmoreram.com")
