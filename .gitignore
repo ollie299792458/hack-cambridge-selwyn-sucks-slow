@@ -33,3 +33,7 @@ token.pickle
 
 #ignore test
 test.py
+
+#ignore c python
+__pycache__/
+*.pyc
