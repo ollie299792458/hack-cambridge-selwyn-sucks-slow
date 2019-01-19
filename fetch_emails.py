@@ -6,12 +6,14 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 import json
 import email
+import monzo
 import base64
+import email_scraper
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 
 
-def main():
+def main(creds):
     """Shows basic usage of the Gmail API.
     Lists the user's Gmail labels.
     """
@@ -56,6 +58,8 @@ def main():
         print('Message snippet: %s' % message['snippet'])
         msg_str = base64.urlsafe_b64decode(message['raw'])
         mime_msg = email.message_from_bytes(msg_str)
+        money, time, subject, email_link = email_scraper.scrape(mime_msg)
+        monzo.match_and_upload_receipt(money, time, subject, email_link)
 
 
 if __name__ == '__main__':
