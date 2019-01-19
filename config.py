@@ -1,7 +1,7 @@
 # Register your third party application on http://developers.monzo.com by logging in with your personal 
 # Monzo account. Copy this file into config.py, and enter your credentials into the file.
 MONZO_CLIENT_ID = "oauth2client_00009eyBFKeFwMnUa4mUPx"
-MONZO_CLIENT_SECRET = "user_00009Qiywlqzo0MBAxxdrt"
+MONZO_CLIENT_SECRET = "mnzconf.pm5H3sTJ6EUBjJQFkU83FTGHX8KLyyesk1xdUkBBdFtpj+pAbYjKSaeo+RMhVunExxjdHreHVmLeLJ5dBr90"
 
 # Configurations you should not need to change.
 MONZO_OAUTH_HOSTNAME = "auth.monzo.com"
@@ -9,7 +9,7 @@ MONZO_API_HOSTNAME = "api.monzo.com"
 MONZO_RESPONSE_TYPE = "code"
 MONZO_AUTH_GRANT_TYPE = "authorization_code"
 MONZO_REFRESH_GRANT_TYPE = "refresh_token"
-MONZO_OAUTH_REDIRECT_URI = "http://127.0.0.1:8080/oauth2callbackmonzo/" # For receiving the auth code, not currently used.
+MONZO_OAUTH_REDIRECT_URI = "http://localhost:8080/oauth2callbackmonzo/" # For receiving the auth code, not currently used.
 MONZO_CLIENT_IS_CONFIDENTIAL = True 
 # If your application runs on a backend server with client secret hidden from user, it should be registered 
 # as confidential and will have the ability to refresh access tokens.

@@ -27,7 +27,6 @@ def scrape(message_id, mime_msg):
             max_money = money
 
     if max_money is None:
-        print("No prices found")
         return 1,datetime.now(),"hi","downloadmoreram.com"
 
     money = max_money

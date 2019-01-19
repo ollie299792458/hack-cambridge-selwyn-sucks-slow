@@ -37,7 +37,6 @@ def main(creds, monzo_creds):
 
     for message in messages:
         message = service.users().messages().get(userId='me', id=message['id'], format='raw').execute()
-        print('Message snippet: %s' % message['snippet'])
         msg_str = base64.urlsafe_b64decode(message['raw'])
         mime_msg = email.message_from_bytes(msg_str)
         try:
