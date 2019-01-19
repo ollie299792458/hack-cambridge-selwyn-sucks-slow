@@ -167,7 +167,7 @@ def oauth2callback():
     credentials = flow.credentials
     flask.session['credentials'] = credentials_to_dict(credentials)
 
-    return flask.redirect(flask.url_for('test_api_request'))
+    return flask.redirect('/')
 
 
 @app.route('/revoke')
@@ -217,6 +217,8 @@ def print_index_table():
             '<td>Go directly to the authorization flow. If there are stored ' +
             '    credentials, you still might not be prompted to reauthorize ' +
             '    the application.</td></tr>' +
+            '<tr><td><a href="/doeverything">Add receipts to transactions</a></td>' +
+            '<td>Adds reciepts to transcations</td></tr>' +
             '<tr><td><a href="/revoke">Revoke current credentials</a></td>' +
             '<td>Revoke the access token associated with the current user ' +
             '    session. After revoking credentials, if you go to the test ' +
