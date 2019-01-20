@@ -38,15 +38,24 @@ def match_and_upload_receipt(price, date, text, link, transactions, ACCESS_TOKEN
     "Authorization: Bearer $access_token" \
     "account_id==$account_id"
 
-    if not str(-abs(price)) in transactions :
+    if not str(-abs(price)) in transactions:
+        print("price not in your monzo")
         return -1
 
-    candidates = transactions[str(-abs(price))]
+    candidates = list(transactions[str(-abs(price))])
+
+    #print("candidates" + str(candidates))
+    #print("firstcandidates" + str(candidates[0]))
 
     if len(candidates) == 0:
+        print("no candiadtes")
         return -1
 
-    candidate = min(candidates, key=lambda x: (datetime.fromisoformat(x['created']) - date).total_seconds())
+
+    #candidate = min(candidates, key=lambda x: (datetime.fromisoformat(x['created']) - date).total_seconds())
+    candidate = candidates[0]
+
+    print("found candidate: " + str(candidate))
 
     # Using a random receipt ID we generate as external ID
     receipt_id = uuid.uuid4().hex

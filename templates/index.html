@@ -70,6 +70,9 @@
 <script>
     $("#muncher").click(function (e) {
         $("#muncher").addClass("is-loading");
+        setTimeout(function() {
+            $('#muncher').removeClass("is-loading")
+        }, 10000)
         e.preventDefault();
         $.get("/doeverything");
     });

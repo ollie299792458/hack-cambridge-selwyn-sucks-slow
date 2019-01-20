@@ -14,14 +14,16 @@ def scrape(message_id, mime_msg):
     else:
         soup = BeautifulSoup(mime_msg.get_payload(decode=True), 'html.parser')
 
-    regex_digits = '\s*\d+\s*\.\s*\d+\s*'
+    regex_digits = r'\s*\d+\s*\.\s*\d+\s*'
     regex = r'(?:GBP|£)('+regex_digits+')|('+regex_digits+')(?:GBP|£)'
 
     moniestrings = soup.find_all(string=re.compile(regex))
 
     max_money = None
     for s in moniestrings:
-        money = float(list(filter(lambda x: x is not None, re.compile(regex).match(moniestrings[0]).groups()))[0])
+        if re.compile(regex).match(s) is None:
+            continue
+        money = float(list(filter(lambda x: x is not None, re.compile(regex).match(s).groups()))[0])
         money = int(money * 100)
 
         if max_money is None or money > max_money:
@@ -36,6 +38,7 @@ def scrape(message_id, mime_msg):
 
     subject = mime_msg['subject']
 
+
     email_link = "https://mail.google.com/mail/#inbox/{}".format(message_id)
 
-    return money, time, subject, email_link
+    return -money, time, subject, email_link
