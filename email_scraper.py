@@ -27,7 +27,6 @@ def scrape(message_id, mime_msg):
             max_money = money
 
     if max_money is None:
-        print("No prices found")
         return 1,datetime.now(),"hi","downloadmoreram.com"
 
     money = max_money
@@ -38,4 +37,4 @@ def scrape(message_id, mime_msg):
 
     email_link = "https://mail.google.com/mail/#inbox/{}".format(message_id)
 
-    return -money, time, subject, email_link
+    return money, time, subject, email_link
