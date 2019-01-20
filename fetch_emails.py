@@ -39,6 +39,7 @@ def main(creds, monzo_creds):
     transactions = monzo.get_transactions( monzo_creds['first_account_id'], monzo_creds['access_token']);
     print("Monzo transactions downloaded: " + str(len(transactions)))
     print("Munching receipts")
+    count = 0;
     for message in messages:
         message = service.users().messages().get(userId='me', id=message['id'], format='raw').execute()
         msg_str = base64.urlsafe_b64decode(message['raw'])
@@ -47,9 +48,13 @@ def main(creds, monzo_creds):
             money, time, subject, email_link = email_scraper.scrape(message['id'], mime_msg)
 
             if money != 1:
-                monzo.match_and_upload_receipt(money, time, subject, email_link, transactions)
+                if 1 == monzo.match_and_upload_receipt(money, time, subject, email_link, transactions, monzo_creds['access_token']) :
+                    count = count + 1
+                    print("Receipt munched successfully")
+
         except:
             continue
+    print("Receipts munched: "+ str(count))
 
 if __name__ == '__main__':
     main()

@@ -32,19 +32,19 @@ def get_transactions( ACCOUNT_ID, ACCESS_TOKEN):
 
 
 #price integer pennies, date is datetime, text is string, link is string
-def match_and_upload_receipt(price, date, text, link, transactions):
+def match_and_upload_receipt(price, date, text, link, transactions, ACCESS_TOKEN):
     #get all transactions
     #http "https://api.monzo.com/transactions" \
     "Authorization: Bearer $access_token" \
     "account_id==$account_id"
 
     if not str(-abs(price)) in transactions :
-        return
+        return -1
 
     candidates = transactions[str(-abs(price))]
 
     if len(candidates) == 0:
-        return
+        return -1
 
     candidate = min(candidates, key=lambda x: (datetime.fromisoformat(x['created']) - date).total_seconds())
 
@@ -58,6 +58,7 @@ def match_and_upload_receipt(price, date, text, link, transactions):
     example_receipt_marshaled = example_receipt.marshal()
     print(date.isoformat() + " " + str(example_receipt_marshaled))
     client = requests.put("https://api.monzo.com/transaction-receipts/", data=example_receipt_marshaled, headers={'Authorization': 'Bearer '+ACCESS_TOKEN})
+    return 1
 
 # test
 #match_and_upload_receipt(-1010, datetime(2019,1,2),"Testing testing 1 2 3 receipt muncher","downloadmoreram.com")
