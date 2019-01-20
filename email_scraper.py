@@ -23,6 +23,7 @@ def scrape(message_id, mime_msg):
     for s in moniestrings:
         money = float(list(filter(lambda x: x is not None, re.compile(regex).match(moniestrings[0]).groups()))[0])
         money = int(money * 100)
+
         if max_money is None or money > max_money:
             max_money = money
 
