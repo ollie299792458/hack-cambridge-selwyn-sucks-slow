@@ -54,7 +54,7 @@ def match_and_upload_receipt(price, date, text, link, transactions, ACCESS_TOKEN
     #candidate = min(candidates, key=lambda x: (datetime.fromisoformat(x['created']) - date).total_seconds())
     candidate = candidates[0]
 
-    print("found candidate: " + str(candidate))
+    #print("found candidate: " + str(candidate))
 
     # Using a random receipt ID we generate as external ID
     receipt_id = uuid.uuid4().hex
@@ -64,7 +64,7 @@ def match_and_upload_receipt(price, date, text, link, transactions, ACCESS_TOKEN
     example_receipt = receipt_types.Receipt("", receipt_id, candidate["id"],
                                             abs(candidate["amount"]), "GBP", "", "", example_items)
     example_receipt_marshaled = example_receipt.marshal()
-    print(date.isoformat() + " " + str(example_receipt_marshaled))
+    #print(date.isoformat() + " " + str(example_receipt_marshaled))
     client = requests.put("https://api.monzo.com/transaction-receipts/", data=example_receipt_marshaled, headers={'Authorization': 'Bearer '+ACCESS_TOKEN})
     return 1
 
