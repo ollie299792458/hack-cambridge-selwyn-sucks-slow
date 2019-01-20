@@ -20,27 +20,28 @@ from main import ReceiptsClient
 import main
 import receipt_types
 
+def get_transactions( ACCOUNT_ID, ACCESS_TOKEN):
+    r = requests.get('https://api.monzo.com/transactions?expand[]=merchant&account_id='+ACCOUNT_ID, headers={'Authorization': 'Bearer '+ACCESS_TOKEN})
+    raw_transactions = json.loads(r.text)["transactions"]
+    transactions = {}
+    for raw_transaction in raw_transactions :
+        transactions[str(raw_transaction['amount'])] = []
+    for raw_transaction in raw_transactions :
+        transactions[str(raw_transaction['amount'])].append(raw_transaction)
+    return transactions
+
 
 #price integer pennies, date is datetime, text is string, link is string
-def match_and_upload_receipt(price, date, text, link, ACCOUNT_ID, ACCESS_TOKEN):
+def match_and_upload_receipt(price, date, text, link, transactions):
     #get all transactions
     #http "https://api.monzo.com/transactions" \
     "Authorization: Bearer $access_token" \
     "account_id==$account_id"
 
-    since = (date - timedelta(days=7)).isoformat()[:-6]+'Z'
-    before = (date + timedelta(days=7)).isoformat()[:-6]+'Z'
-    r = requests.get('https://api.monzo.com/transactions?expand[]=merchant&account_id='+ACCOUNT_ID+'&since='+since+
-                     '&before'+before, headers={'Authorization': 'Bearer '+ACCESS_TOKEN})
-    transactions = json.loads(r.text)["transactions"]
+    if not str(-abs(price)) in transactions :
+        return
 
-    candidates = []
-
-    for transaction in transactions :
-        #print(transaction)
-        if -transaction["amount"] == abs(price):
-            #check if debit transaction
-            candidates.append(transaction)
+    candidates = transactions[str(-abs(price))]
 
     if len(candidates) == 0:
         return
