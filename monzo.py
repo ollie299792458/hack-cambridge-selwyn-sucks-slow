@@ -39,7 +39,6 @@ def match_and_upload_receipt(price, date, text, link, transactions, ACCESS_TOKEN
     "account_id==$account_id"
 
     if not str(-abs(price)) in transactions:
-        print("price not in your monzo")
         return -1
 
     candidates = list(transactions[str(-abs(price))])
