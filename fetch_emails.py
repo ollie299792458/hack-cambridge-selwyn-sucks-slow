@@ -53,7 +53,7 @@ def main(creds, monzo_creds):
             if money != 1:
                 if 1 == monzo.match_and_upload_receipt(money, time, subject, email_link, transactions, monzo_creds['access_token']) :
                     count = count + 1
-                    print("Receipt munched successfully")
+                    print("Receipt munched successfully"+str(mime_msg['subject']))
 
         except:
             continue

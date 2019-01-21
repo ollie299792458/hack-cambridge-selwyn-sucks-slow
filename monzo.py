@@ -47,12 +47,19 @@ def match_and_upload_receipt(price, date, text, link, transactions, ACCESS_TOKEN
     #print("firstcandidates" + str(candidates[0]))
 
     if len(candidates) == 0:
-        print("no candiadtes")
+        print("no candidates")
         return -1
 
 
     #candidate = min(candidates, key=lambda x: (datetime.fromisoformat(x['created']) - date).total_seconds())
     candidate = candidates[0]
+
+    before = date + timedelta(days=7)
+    since = date - timedelta(days=7)
+
+    if not (True):
+        #fix the time thing
+        return
 
     #print("found candidate: " + str(candidate))
 
